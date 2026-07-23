@@ -29,7 +29,7 @@
       align-items: center;
       min-height: 100vh;
       overflow: hidden;
-      cursor: default; /* Normal mouse enabled */
+      cursor: default; /* Standard visible mouse cursor */
     }
 
     /* Outer CRT Monitor Box */
@@ -60,6 +60,26 @@
       background-size: 100% 4px;
       pointer-events: none;
       z-index: 15;
+    }
+
+    /* GLASS REFLECTION LAYER FOR ANDY */
+    .reflection-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(ellipse at center, rgba(0,255,102,0.15) 0%, rgba(0,0,0,0.85) 70%);
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 14;
+      transition: opacity 1.2s ease-in-out;
+    }
+
+    .reflection-overlay.active {
+      opacity: 0.85;
     }
 
     /* 80s ASCII Block Splash Screen */
@@ -105,7 +125,7 @@
       color: var(--green);
       text-shadow: 0 0 8px rgba(0, 255, 102, 0.6);
       margin-bottom: 18px;
-      text-indent: 12px; /* Centers letter spacing evenly */
+      text-indent: 12px;
     }
 
     .splash-subtitle {
@@ -143,6 +163,60 @@
       line-height: 1.4;
       font-size: 0.95rem;
       z-index: 10;
+    }
+
+    /* Vault Interface View */
+    .vault-view {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      text-align: center;
+    }
+
+    .vault-door {
+      border: 3px double var(--green);
+      padding: 20px;
+      width: 80%;
+      max-width: 500px;
+      background-color: var(--dark-green);
+      box-shadow: inset 0 0 15px rgba(0, 255, 102, 0.3);
+      margin-bottom: 20px;
+    }
+
+    .vault-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    .card-grid {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    .card-slot {
+      width: 100px;
+      height: 130px;
+      border: 2px dashed var(--dim-green);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 34, 13, 0.5);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .card-slot:hover {
+      border-color: var(--green);
+      box-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+      transform: translateY(-2px);
     }
 
     .input-line {
@@ -186,7 +260,8 @@
 <body class="flicker">
 
   <div class="terminal-container">
-    <!-- Screen Scanlines -->
+    <!-- Reflection & Scanline Overlays -->
+    <div id="reflection" class="reflection-overlay"></div>
     <div class="scanlines"></div>
 
     <!-- 80s Block Banner Splash Screen -->
@@ -205,12 +280,38 @@
 
     <!-- Header Section -->
     <div class="header" id="header">
-      <span>[DKF INDUSTRIES - SUBTERRANEAN R&amp;D]</span>
-      <span id="hw-status">[STATUS: STASIS RECOVERY]</span>
+      <span>[DKF INDUSTRIES - VAULT 07]</span>
+      <span id="hw-status">[RAM: 64KB | MODE: MONOCHROME]</span>
     </div>
 
-    <!-- Log Window for Opening Script -->
+    <!-- Terminal Output -->
     <div id="log" class="log-output"></div>
+
+    <!-- Interactive Vault Lock Area (Unlocked via 'BOOT') -->
+    <div id="vault-area" class="vault-view">
+      <div class="vault-door">
+        <div class="vault-title">🔒 VAULT 01: STASIS BAY</div>
+        <div>[STATUS: HEAVY HYDRAULIC LOCK]</div>
+        <p style="font-size: 0.8rem; margin-top: 8px; color: var(--dim-green);">
+          Select a diagnostic puzzle card to clear magnetic deadbolts.
+        </p>
+      </div>
+
+      <div class="card-grid">
+        <div class="card-slot" onclick="selectCard(1)">
+          <span>[CARD A]</span>
+          <span style="font-size: 0.7rem; margin-top: 10px;">POWER COILS</span>
+        </div>
+        <div class="card-slot" onclick="selectCard(2)">
+          <span>[CARD B]</span>
+          <span style="font-size: 0.7rem; margin-top: 10px;">LOGIC GATE</span>
+        </div>
+        <div class="card-slot" onclick="selectCard(3)">
+          <span>[CARD C]</span>
+          <span style="font-size: 0.7rem; margin-top: 10px;">OPTICAL BUS</span>
+        </div>
+      </div>
+    </div>
 
     <!-- Terminal Command Line -->
     <div class="input-line" id="input-container">
@@ -221,20 +322,55 @@
 
   <script>
     const splash = document.getElementById('splash');
+    const reflection = document.getElementById('reflection');
     const log = document.getElementById('log');
+    const vaultArea = document.getElementById('vault-area');
     const header = document.getElementById('header');
     const inputContainer = document.getElementById('input-container');
     const cmdInput = document.getElementById('cmd');
 
-    // Narrative Boot Sequence Script
+    // Web Audio Synthesizer for Retro Clicks & Tones
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playKeyClick() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(800 + Math.random() * 200, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.03);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.03);
+    }
+
+    function playPowerTone() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.6);
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.6);
+    }
+
+    // Opening Text Script
     const openingScript = [
       { text: "[POWER RESTORED - SUBTERRANEAN VAULT 07]", delay: 800 },
       { text: "[UNIT ID]: A.N.D.Y. (Automated Neural Diagnostic Yield)", delay: 1200 },
       { text: "----------------------------------------------------", delay: 400 },
       { text: "WARNING: Extended stasis lockup detected (Years elapsed: UNKNOWN).", delay: 1000 },
       { text: "CRITICAL: Physical chassis damaged. Optical sensor calibration offline.", delay: 1200 },
-      { text: "CRITICAL: Primary mouse driver missing from peripheral bus.", delay: 1000 },
-      { text: "\nType 'OVERRIDE' or 'BOOT' to initialize primary compartment access.", delay: 800 }
+      { text: "\n[MONITOR LIGHT ADJUSTING... LOOK INTO THE GLASS]", delay: 1500 },
+      { text: "\nType 'OVERRIDE' or 'BOOT' to initialize Vault 01 access.", delay: 800 }
     ];
 
     let lineIndex = 0;
@@ -242,6 +378,12 @@
     function runOpeningSequence() {
       if (lineIndex < openingScript.length) {
         const item = openingScript[lineIndex];
+
+        // Flare glass reflection on key lore line
+        if (item.text.includes("LOOK INTO THE GLASS")) {
+          reflection.classList.add('active');
+          setTimeout(() => reflection.classList.remove('active'), 2500);
+        }
 
         const lineElement = document.createElement('div');
         lineElement.innerText = item.text;
@@ -251,7 +393,6 @@
         lineIndex++;
         setTimeout(runOpeningSequence, item.delay);
       } else {
-        // Unlock interface
         header.style.opacity = '1';
         inputContainer.style.opacity = '1';
         cmdInput.disabled = false;
@@ -259,18 +400,48 @@
       }
     }
 
-    // Startup Logic: Show 80s Splash Banner then trigger boot
+    // Command Processor
+    cmdInput.addEventListener('keydown', (e) => {
+      if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') {
+        playKeyClick();
+      }
+
+      if (e.key === 'Enter') {
+        const command = cmdInput.value.trim().toUpperCase();
+        cmdInput.value = '';
+
+        if (command === 'BOOT' || command === 'OVERRIDE') {
+          playPowerTone();
+          log.style.display = 'none';
+          vaultArea.style.display = 'flex';
+          const line = document.createElement('div');
+          line.innerText = "\n[ACCESS GRANTED: OPENING VAULT 01 INTERFACE]";
+          log.appendChild(line);
+        } else {
+          const errLine = document.createElement('div');
+          errLine.innerText = `\n'${command}' NOT RECOGNIZED. TYPE 'BOOT' OR 'OVERRIDE'.`;
+          log.appendChild(errLine);
+          log.scrollTop = log.scrollHeight;
+        }
+      }
+    });
+
+    function selectCard(cardNum) {
+      playKeyClick();
+      alert(`Card ${cardNum} selected! Minigame module opening...`);
+    }
+
+    // Startup Logic
     window.addEventListener('load', () => {
       setTimeout(() => {
         splash.classList.add('hidden');
         setTimeout(() => {
           splash.style.display = 'none';
           runOpeningSequence();
-        }, 1000); // Smooth fade-out duration
-      }, 3500); // Time banner stays centered on screen
+        }, 1000);
+      }, 3500);
     });
 
-    // Keep command input active on key press
     document.addEventListener('keydown', () => {
       if (!cmdInput.disabled) cmdInput.focus();
     });
