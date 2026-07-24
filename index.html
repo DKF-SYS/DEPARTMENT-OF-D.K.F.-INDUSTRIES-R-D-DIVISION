@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DKF Industries - Subterranean R&D Terminal</title>
+  <title>DKF Industries - Vault Terminal System</title>
   <style>
     :root {
       --green: #00ff66;
@@ -12,6 +12,7 @@
       --bg: #030804;
       --panel-bg: #050d07;
       --dim-green: #008833;
+      --amber: #ffb000;
     }
 
     * {
@@ -29,10 +30,8 @@
       align-items: center;
       min-height: 100vh;
       overflow: hidden;
-      cursor: default;
     }
 
-    /* Terminal Window Container */
     .terminal-container {
       position: relative;
       width: 95vw;
@@ -49,7 +48,7 @@
       overflow: hidden;
     }
 
-    /* CRT Scanlines Layer */
+    /* CRT Scanlines & Screen Glass */
     .scanlines {
       position: absolute;
       top: 0;
@@ -62,37 +61,6 @@
       z-index: 15;
     }
 
-    /* GLASS REFLECTION LAYER FOR A.N.D.Y. */
-    .reflection-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 5; /* Positioned behind text layer so text is crisp */
-      
-      /* Translucent baseline so text easily bleeds through */
-      opacity: 0.20; 
-      transition: opacity 0.25s ease-in-out;
-      
-      /* Removes black backgrounds and blends image into dark CRT glass */
-      mix-blend-mode: screen; 
-      
-      /* Image Asset Config */
-      background-image: url('andy monitor reflection.jpg'); /* Works with .jpg or .png */
-      background-size: contain;
-      background-position: center bottom;
-      background-repeat: no-repeat;
-      filter: blur(0.5px) contrast(1.1);
-    }
-
-    /* Dynamic flare when text types across screen */
-    .reflection-container.active {
-      opacity: 0.28;
-    }
-
-    /* Glass Curvature Vignette Overlay */
     .glass-curvature {
       position: absolute;
       top: 0;
@@ -104,242 +72,331 @@
       z-index: 16;
     }
 
-    /* 80s Splash Screen */
-    .splash-screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: var(--panel-bg);
-      z-index: 20;
-      opacity: 1;
-      transition: opacity 1s ease-out;
-      text-align: center;
-      padding: 10px;
-    }
-
-    .splash-screen.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .ascii-art {
-      font-family: 'Courier New', monospace;
-      font-size: 0.75rem;
-      line-height: 1.1;
-      font-weight: bold;
-      white-space: pre;
-      color: var(--green);
-      text-shadow: 0 0 10px rgba(0, 255, 102, 0.7);
-      margin-bottom: 12px;
-    }
-
-    .splash-industries {
-      font-size: 1.5rem;
-      font-weight: bold;
-      letter-spacing: 12px;
-      color: var(--green);
-      text-shadow: 0 0 8px rgba(0, 255, 102, 0.6);
-      margin-bottom: 18px;
-      text-indent: 12px;
-    }
-
-    /* Terminal Interface Layers */
+    /* System Header */
     .header {
       border-bottom: 2px dashed var(--green);
-      padding-bottom: 12px;
-      margin-bottom: 15px;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       font-size: 0.85rem;
-      z-index: 10; /* Sitting cleanly above the reflection layer */
-      opacity: 0;
-      transition: opacity 1s ease;
+      z-index: 10;
     }
 
+    /* Boot Log View */
     .log-output {
       flex: 1;
       overflow-y: auto;
-      margin-bottom: 15px;
       white-space: pre-wrap;
       line-height: 1.4;
       font-size: 0.95rem;
-      z-index: 10; /* Sitting cleanly above the reflection layer */
-      text-shadow: 0 0 4px rgba(0, 255, 102, 0.6); /* Text glow helps readability */
+      z-index: 10;
     }
 
-    .input-line {
+    /* Upgraded GUI Search Engine Interface */
+    .gui-view {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      z-index: 10;
+    }
+
+    .search-bar-container {
       display: flex;
       align-items: center;
-      border-top: 1px solid var(--mid-green);
-      padding-top: 10px;
-      margin-bottom: 10px;
-      z-index: 10;
-      opacity: 0;
-      transition: opacity 1s ease;
+      background: var(--dark-green);
+      border: 2px solid var(--green);
+      padding: 8px 12px;
+      margin-bottom: 15px;
     }
 
-    .prompt {
-      margin-right: 10px;
+    .search-label {
       font-weight: bold;
+      margin-right: 10px;
+      color: var(--green);
     }
 
-    #cmd {
+    .search-input {
       flex: 1;
       background: transparent;
       border: none;
       color: var(--green);
       font-family: inherit;
-      font-size: 1rem;
+      font-size: 1.1rem;
       outline: none;
-      cursor: text;
+    }
+
+    .vault-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      flex: 1;
+    }
+
+    .vault-box {
+      border: 2px solid var(--dim-green);
+      background: rgba(0, 34, 13, 0.3);
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+    }
+
+    .vault-box.active {
+      border-color: var(--green);
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+      background: rgba(0, 51, 20, 0.6);
+    }
+
+    .vault-box.alert {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .btn-action {
+      background: var(--dark-green);
+      border: 1px solid var(--green);
+      color: var(--green);
+      padding: 6px;
+      font-family: inherit;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-action:hover {
+      background: var(--green);
+      color: var(--bg);
+    }
+
+    .hardware-banner {
+      background: var(--dark-green);
+      border: 1px solid var(--green);
+      padding: 8px;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      text-align: center;
+      animation: flash 1s infinite alternate;
+    }
+
+    @keyframes flash {
+      0% { opacity: 0.7; }
+      100% { opacity: 1; }
     }
   </style>
 </head>
 <body>
 
   <div class="terminal-container">
-    <!-- CRT Overlays & Background Glass Reflection -->
     <div class="glass-curvature"></div>
     <div class="scanlines"></div>
-    <div id="reflection" class="reflection-container"></div>
 
-    <!-- 80s Splash Screen -->
-    <div id="splash" class="splash-screen">
-      <pre class="ascii-art">
-  ██████╗  ██╗  ██╗ ███████╗
-  ██╔══██╗ ██║ ██╔╝ ██╔════╝
-  ██║  ██║ █████═╝  █████╗  
-  ██║  ██║ ██╔═██╗  ██╔══╝  
-  ██████╔╝ ██║  ██╗ ██║     
-  ╚═════╝  ╚═╝  ╚═╝ ╚═╝     
-      </pre>
-      <div class="splash-industries">INDUSTRIES</div>
+    <div class="header">
+      <span>[DKF VAULT OS - SUBTERRANEAN R&amp;D]</span>
+      <span id="sys-status">[STATUS: BOOTING]</span>
     </div>
 
-    <!-- Terminal Header -->
-    <div class="header" id="header">
-      <span>[DKF INDUSTRIES - VAULT 07]</span>
-      <span id="hw-status">[RAM: 64KB | MODE: MONOCHROME]</span>
-    </div>
-
-    <!-- Log Output Area -->
+    <!-- Console Log View -->
     <div id="log" class="log-output"></div>
 
-    <!-- Command Prompt -->
-    <div class="input-line" id="input-container">
-      <span class="prompt">A.N.D.Y.:&gt;</span>
-      <input type="text" id="cmd" autocomplete="off" spellcheck="false" disabled>
+    <!-- Upgraded Search Engine Interface -->
+    <div id="gui" class="gui-view">
+      <div class="search-bar-container">
+        <span class="search-label">ARCHIVE SEARCH:&gt;</span>
+        <input type="text" id="search-box" class="search-input" readonly placeholder="Awaiting query...">
+      </div>
+
+      <div class="vault-grid" id="vault-display">
+        <!-- Dynamic Search Results Rendered Here -->
+      </div>
+
+      <div id="notification-area"></div>
     </div>
   </div>
 
   <script>
-    const splash = document.getElementById('splash');
-    const reflection = document.getElementById('reflection');
     const log = document.getElementById('log');
-    const header = document.getElementById('header');
-    const inputContainer = document.getElementById('input-container');
-    const cmdInput = document.getElementById('cmd');
+    const gui = document.getElementById('gui');
+    const sysStatus = document.getElementById('sys-status');
+    const searchBox = document.getElementById('search-box');
+    const vaultDisplay = document.getElementById('vault-display');
+    const notificationArea = document.getElementById('notification-area');
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    function playKeyClick() {
+    function playBeep(freq = 800, duration = 0.05) {
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.type = 'square';
-      osc.frequency.setValueAtTime(700 + Math.random() * 150, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.02);
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
       gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.02);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
       osc.start();
-      osc.stop(audioCtx.currentTime + 0.02);
+      osc.stop(audioCtx.currentTime + duration);
     }
 
-    const openingScript = [
-      "[POWER RESTORED - SUBTERRANEAN VAULT 07]",
-      "[UNIT ID]: A.N.D.Y. (Automated Neural Diagnostic Yield)",
-      "----------------------------------------------------",
-      "WARNING: Extended stasis lockup detected.",
-      "CRITICAL: Physical chassis damaged. Optical sensor offline.",
-      "\n[MONITOR LIGHT ADJUSTING... OPTICAL SENSORS DETECT REFLECTION]",
-      "\n[SECURITY CHECK]: TYPE 'ANDY' TO CONFIRM UNIT IDENTITY."
+    // Sequence 1: Boot & Upgrade
+    const bootScript = [
+      "[INITIALIZING SYSTEM OVERHAUL...]",
+      "[DOWNLOADING UPGRADING SYSTEMS PROGRAM... PLEASE WAIT]",
+      "....................................................",
+      "[INSTALLING HIGH-DEFINITION ARCHIVE SEARCH ENGINE]",
+      "[CONFIGURING HARDWARE BUS & PERIPHERAL DETECTION]",
+      "[COMPLETE: SWITCHING TO GRAPHICAL INTERFACE]"
     ];
 
-    let lineIndex = 0;
-
-    function triggerReflectionPulse() {
-      reflection.classList.add('active');
-      setTimeout(() => reflection.classList.remove('active'), 180);
-    }
-
-    function runOpeningSequence() {
-      if (lineIndex < openingScript.length) {
-        const lineText = openingScript[lineIndex];
-        const lineElement = document.createElement('div');
-        log.appendChild(lineElement);
-
-        let charIndex = 0;
-        const typeInterval = setInterval(() => {
-          if (charIndex < lineText.length) {
-            lineElement.innerText += lineText[charIndex];
-            playKeyClick();
-            if (Math.random() > 0.35) triggerReflectionPulse();
-            charIndex++;
-          } else {
-            clearInterval(typeInterval);
-            lineIndex++;
-            setTimeout(runOpeningSequence, 500);
-          }
-          log.scrollTop = log.scrollHeight;
-        }, 30);
+    let scriptIdx = 0;
+    function runBoot() {
+      if (scriptIdx < bootScript.length) {
+        const div = document.createElement('div');
+        div.innerText = bootScript[scriptIdx];
+        log.appendChild(div);
+        playBeep(600, 0.03);
+        scriptIdx++;
+        setTimeout(runBoot, 800);
       } else {
-        header.style.opacity = '1';
-        inputContainer.style.opacity = '1';
-        cmdInput.disabled = false;
-        cmdInput.focus();
+        setTimeout(switchToGUI, 1200);
       }
     }
 
-    cmdInput.addEventListener('keydown', (e) => {
-      if (e.key.length === 1 || e.key === 'Backspace') {
-        playKeyClick();
-        triggerReflectionPulse();
-      }
+    function switchToGUI() {
+      log.style.display = 'none';
+      gui.style.display = 'flex';
+      sysStatus.innerText = '[STATUS: HIGH-DEF SEARCH ACTIVE]';
+      startAndyStorySequence();
+    }
 
-      if (e.key === 'Enter') {
-        playKeyClick();
-        const command = cmdInput.value.trim().toUpperCase();
-        cmdInput.value = '';
-
-        const response = document.createElement('div');
-        if (command === 'ANDY' || command === 'A.N.D.Y.') {
-          response.innerText = "\n[NEURAL LINK CONFIRMED: UNIT A.N.D.Y.]\n[MAGNETIC DEADBOLTS RELEASED - VAULT 01 OPEN]";
-          reflection.style.opacity = '0.30'; // Slightly brightens when identity is authorized
+    // Automated Automated Typing Function
+    function typeQuery(text, callback) {
+      searchBox.value = '';
+      let i = 0;
+      const interval = setInterval(() => {
+        if (i < text.length) {
+          searchBox.value += text[i];
+          playBeep(900 + Math.random() * 100, 0.02);
+          i++;
         } else {
-          response.innerText = `\n[IDENTITY MISMATCH]: '${command}' UNRECOGNIZED. TYPE 'ANDY'.`;
+          clearInterval(interval);
+          setTimeout(callback, 600);
         }
-        log.appendChild(response);
-        log.scrollTop = log.scrollHeight;
-      }
-    });
+      }, 70);
+    }
 
-    window.addEventListener('load', () => {
+    // Sequence 2: Narrative Search & Vault Progression
+    function startAndyStorySequence() {
+      // Step A: Search Laser Mouse
+      typeQuery("Upgraded Laser Mouse", () => {
+        vaultDisplay.innerHTML = `
+          <div class="vault-box active">
+            <div>
+              <h3>[VAULT BOX 04 - OPTICS]</h3>
+              <p style="font-size: 0.8rem; margin-top: 6px;">ITEM: Precision Laser Tracking Mouse</p>
+              <p style="font-size: 0.8rem; color: var(--green);">STATUS: IN STOCK (LOCATED)</p>
+            </div>
+            <button class="btn-action" onclick="unlockMouseVault()">ENTER UNLOCK CODE: [7741]</button>
+          </div>
+        `;
+      });
+    }
+
+    function unlockMouseVault() {
+      playBeep(1200, 0.1);
+      vaultDisplay.innerHTML = `<div class="vault-box active"><p>🔓 STORAGE VAULT 04 OPENED. RETRIEVE MOUSE IN REAL TIMELINE.</p></div>`;
+      
       setTimeout(() => {
-        splash.classList.add('hidden');
-        setTimeout(() => {
-          splash.style.display = 'none';
-          runOpeningSequence();
-        }, 1000);
-      }, 2500);
-    });
+        notificationArea.innerHTML = `<div class="hardware-banner">🖱️ NEW HARDWARE DETECTED: HIGH-PRECISION LASER MOUSE CONNECTED</div>`;
+        playBeep(1500, 0.15);
+        setTimeout(stepMemoryUpgrade, 2500);
+      }, 2000);
+    }
+
+    function stepMemoryUpgrade() {
+      notificationArea.innerHTML = '';
+      typeQuery("Memory Upgrades", () => {
+        vaultDisplay.innerHTML = `
+          <div class="vault-box active">
+            <div>
+              <h3>[VAULT BOX 09 - SYSTEM RAM]</h3>
+              <p style="font-size: 0.8rem; margin-top: 6px;">ITEM: 128MB High-Density Stasis RAM</p>
+              <p style="font-size: 0.8rem; color: var(--green);">STATUS: IN STOCK</p>
+            </div>
+            <button class="btn-action" onclick="unlockMemoryVault()">ENTER UNLOCK CODE: [3092]</button>
+          </div>
+        `;
+      });
+    }
+
+    function unlockMemoryVault() {
+      playBeep(1200, 0.1);
+      vaultDisplay.innerHTML = `<div class="vault-box active"><p>🔓 STORAGE VAULT 09 OPENED. RETRIEVE RAM MODULE.</p></div>`;
+      
+      setTimeout(() => {
+        notificationArea.innerHTML = `<div class="hardware-banner">💾 HARDWARE NOTIFICATION: UPGRADED MEMORY DETECTED (128MB ACTIVE)</div>`;
+        playBeep(1500, 0.15);
+        setTimeout(stepBatterySearch, 2500);
+      }, 2000);
+    }
+
+    function stepBatterySearch() {
+      notificationArea.innerHTML = '';
+      typeQuery("Battery Charging Unit", () => {
+        vaultDisplay.innerHTML = `
+          <div class="vault-box alert">
+            <div>
+              <h3>[VAULT SEARCH RESULTS]</h3>
+              <p style="font-size: 0.85rem; margin-top: 8px;">QUERY: Battery Charging Unit</p>
+              <p style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;">⚠️ NO UNITS IN STOCK / DEPLETED</p>
+            </div>
+          </div>
+        `;
+        setTimeout(stepModemSearch, 2500);
+      });
+    }
+
+    function stepModemSearch() {
+      typeQuery("56k Modem", () => {
+        vaultDisplay.innerHTML = `
+          <div class="vault-box active">
+            <div>
+              <h3>[VAULT BOX 12 - COMM HARDWARE]</h3>
+              <p style="font-size: 0.8rem; margin-top: 6px;">ITEM: 56k Dial-Up Serial Controller</p>
+              <p style="font-size: 0.8rem; color: var(--green);">STATUS: IN STOCK</p>
+            </div>
+            <button class="btn-action" onclick="connectModem()">ENTER UNLOCK CODE: [5600]</button>
+          </div>
+        `;
+      });
+    }
+
+    function connectModem() {
+      playBeep(1200, 0.1);
+      vaultDisplay.innerHTML = `
+        <div class="vault-box alert" style="grid-column: span 2;">
+          <h3>⚠️ NETWORK LINK ERROR</h3>
+          <p style="font-size: 0.85rem; margin-top: 8px;">INITIALIZING 56K MODEM HARDWARE BUS...</p>
+          <p style="font-size: 0.85rem; margin-top: 8px; color: var(--amber);">[LINK UNAVAILABLE: DIGITAL ETHERNET MODEM REQUIRED]</p>
+          <hr style="border-color: var(--amber); margin: 10px 0;">
+          <p style="font-size: 0.8rem;">PUZZLE: Connect RS-232 Serial Port directly to Mainframe Controller to bypass analog phone check?</p>
+          <button class="btn-action" style="border-color: var(--amber); color: var(--amber);" onclick="applyRS232Bypass()">EXECUTE RS-232 SERIAL BRIDGE</button>
+        </div>
+      `;
+    }
+
+    function applyRS232Bypass() {
+      playBeep(1800, 0.2);
+      vaultDisplay.innerHTML = `
+        <div class="vault-box active" style="grid-column: span 2;">
+          <h3>✅ NETWORK LINK ESTABLISHED</h3>
+          <p style="font-size: 0.85rem; margin-top: 8px;">RS-232 NULL-MODEM BRIDGE ACTIVE.</p>
+          <p style="font-size: 0.85rem; margin-top: 8px; color: var(--green);">[56K SERIAL BUS DIRECTLY MAPPED TO ETHERNET CONTROLLER]</p>
+          <p style="font-size: 0.8rem; margin-top: 10px;">BUNKER BACKHAUL ONLINE. READY FOR NEXT VAULT COMMAND.</p>
+        </div>
+      `;
+    }
+
+    window.addEventListener('load', runBoot);
   </script>
 </body>
 </html>
