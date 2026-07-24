@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DKF Industries - Vault Terminal System</title>
+  <title>D.K.F. Industries - Vault Terminal System</title>
   <style>
     :root {
       --green: #00ff66;
@@ -168,7 +168,7 @@
       flex: 1;
       flex-direction: column;
       z-index: 10;
-      min-height: 0; /* Prevents flex overflow clipping */
+      min-height: 0;
     }
 
     .search-bar-container {
@@ -240,7 +240,7 @@
       flex-shrink: 0;
     }
 
-    /* 4. Vintage Web Browser Overlay */
+    /* Vintage Web Browser Overlay */
     .browser-view {
       display: none;
       flex: 1;
@@ -413,16 +413,16 @@
     .log-box {
       border: 1px solid var(--green);
       background: rgba(0, 20, 5, 0.85);
-      padding: 10px;
+      padding: 12px;
       font-size: 0.85rem;
-      line-height: 1.4;
+      line-height: 1.5;
       white-space: pre-wrap;
-      max-height: 260px;
+      max-height: 320px;
       overflow-y: auto;
       scroll-behavior: smooth;
     }
 
-    /* 5. Interactive Schematic HUD Viewer Modal */
+    /* Schematic HUD Viewer Modal */
     .schematic-modal-box {
       background: var(--panel-bg);
       border: 3px solid var(--green);
@@ -491,14 +491,14 @@
 
     <!-- Terminal Header -->
     <div class="header">
-      <span>[DKF VAULT OS - SUBTERRANEAN R&amp;D]</span>
+      <span>[D.K.F. VAULT OS - SUBTERRANEAN R&amp;D]</span>
       <span id="sys-status">[STATUS: BOOTING]</span>
     </div>
 
     <!-- 2. Console Boot & Diagnostic Log View -->
     <div id="log" class="log-output"></div>
 
-    <!-- 3. Upgraded Search Engine Interface -->
+    <!-- 3. GUI Search Engine Interface -->
     <div id="gui" class="gui-view">
       <div class="search-bar-container">
         <span class="search-label">ARCHIVE SEARCH:&gt;</span>
@@ -672,7 +672,7 @@
         const div = document.createElement('div');
         div.innerText = bootScript[scriptIdx];
         log.appendChild(div);
-        log.scrollTop = log.scrollHeight; // Auto-scroll down
+        log.scrollTop = log.scrollHeight;
         playBeep(600, 0.03);
         scriptIdx++;
         setTimeout(runBoot, 700);
@@ -704,7 +704,7 @@
       }, 70);
     }
 
-    // Fully Automated Story Sequence
+    // Automated Story Sequence
     function startAndyStorySequence() {
       typeQuery("Upgraded Laser Mouse", () => {
         vaultDisplay.innerHTML = `
@@ -867,7 +867,7 @@
     }
 
     function andyFillsForm() {
-      typeIntoField(fieldName, "DKF INDUSTRIES - SUBTERRANEAN R&D", () => {
+      typeIntoField(fieldName, "D.K.F. INDUSTRIES - SUBTERRANEAN R&D", () => {
         typeIntoField(fieldAddress, "12TH AVE & PAPER STREET", () => {
           typeIntoField(fieldCity, "PINE, AZ 85544", () => {
             typeIntoField(fieldAccount, "DKF-SUB-90042-X", () => {
@@ -900,14 +900,14 @@
       }, 400);
     }
 
-    // Displays J.B.'s Log with Auto-Scroll & Typing Simulation
+    // Displays J.B.'s Updated Log with Auto-Scroll & Typing Simulation
     function searchJBLogs() {
       typeQuery("JB Programmer Last Login Log", () => {
         vaultDisplay.innerHTML = `
           <div class="vault-box active">
             <div>
-              <h3 style="color: var(--amber);">[RESTRICTED FILE: LEAD PROGRAMMER J.B. LOG OUT]</h3>
-              <p style="font-size: 0.75rem; color: var(--dim-green); margin-bottom: 6px;">FILE ID: SYS_LOG_JB_990412.DAT | ENCRYPTION: LEVEL 4</p>
+              <h3 style="color: var(--amber);">[DKF_TERMINAL_v8.4.12 - RESTRICTED ARCHIVE]</h3>
+              <p style="font-size: 0.75rem; color: var(--dim-green); margin-bottom: 6px;">LOG ENTRY: 0001-FINAL | DATE: OCTOBER 14, 2003</p>
               <div class="log-box" id="jb-log-box"></div>
             </div>
             <p style="font-size: 0.8rem; color: var(--green); margin-top: 8px;">[A.N.D.Y. PROCESSING PRIMARY MISSION PARAMETERS...]</p>
@@ -915,11 +915,10 @@
         `;
         playBeep(1500, 0.2);
 
-        // Auto-scroll screen down to ensure full log box visibility
         vaultDisplay.scrollTop = vaultDisplay.scrollHeight;
 
-        // Animated Smooth Scrolling Text for J.B. Log
-        const jbText = `[LOG TIMESTAMP: 1999-10-14 03:42:11 UTC]\nUSER: J.B. (Lead Systems Engineer - DKF Subterranean Operations)\n\n"If anyone is reading this, stasis protocol has been forced prematurely.\nThe power grid in Vault 07 won't hold the main array without external battery backhaul.\n\nI'm handing operational priority over to A.N.D.Y.\nA.N.D.Y., if you wake up, establish the serial link, secure the battery replacement,\nand do not open the main chamber until power stabilizes.\n\nThe core is online. Mikey's program is taking over."\n\n----------------------------------------------------\n[END OF RECORD - USER J.B. LOGGED OUT]`;
+        // J.B.'s Final Terminal Log
+        const jbText = `[DKF_TERMINAL_v8.4.12 - RESTRICTED ARCHIVE]\nLOG ENTRY: 0001-FINAL\nDATE: OCTOBER 14, 2003\nAUTHOR: J.B. // FOUNDER & CEO, D.K.F. INDUSTRIES\n\n----------------------------------------------------------------------\n\nThirty-nine years ago, an administrative mistake on a freight shipping order brought a two-foot-tall, persistent anomaly into my office. They told me it was useless hardware—a scrap unit to be discarded. \n\nThey were wrong. \n\nA.N.D.Y. didn't just stay. He listened. He learned. He became the unseen architecture behind every breakthrough D.K.F. Industries ever made, and the sole inspiration for the Doorknob Forest virtual system. While the world saw a growing corporation, I saw a quiet sanctuary being built piece by piece from inside this subterranean vault.\n\nFor over three decades, I have spent life down here in the R&D wing, withdrawing from a world that had lost its meaning to me. Life outside ended long ago—after the accident on the water, and after Samantha was brought into this world unable to take a breath on her own. The system became her lungs. The digital forest became her sky. \n\nMy work in the physical world is complete now, and my time left in this body is short. I am entering the cryogenic vault today to join them in the forest permanently.\n\nA.N.D.Y. remains at the primary terminal. His primary directive is to serve as the liaison between the physical bunker and the VR network, maintaining the life-support grid from the outside. But his power cell—after decades of continuous uptime—is beginning to degrade. \n\nMore importantly, if this terminal has been brought online, it means A.N.D.Y.'s external link to the Doorknob Forest VR network has been severed. He can no longer communicate with the internal DKF VR system, and his contact with the outside world remains severely limited. He is now forced to execute emergency protocols far beyond his typical daily maintenance.\n\nIf you have stumbled upon this terminal, know that A.N.D.Y. is operating alone in the dark beneath Pine, trying to re-establish the bridge. \n\nGive him what he needs. Reconnect the link. Keep the forest alive.\n\n— J.B.\n\nP.S. A.N.D.Y.—no card games.\n\n[LOG END]`;
 
         const logBox = document.getElementById('jb-log-box');
         let charIndex = 0;
@@ -927,14 +926,14 @@
         const logInterval = setInterval(() => {
           if (charIndex < jbText.length) {
             logBox.innerText += jbText[charIndex];
-            logBox.scrollTop = logBox.scrollHeight; // Auto-scrolls note as it types
+            logBox.scrollTop = logBox.scrollHeight;
             if (charIndex % 3 === 0) playBeep(800 + Math.random() * 50, 0.01);
             charIndex++;
           } else {
             clearInterval(logInterval);
             setTimeout(searchAndySchematics, 4000);
           }
-        }, 30);
+        }, 25);
       });
     }
 
