@@ -331,7 +331,7 @@
       cursor: pointer;
     }
 
-    /* Modal / Checkout Form Overlay */
+    /* Modal / Form Overlays */
     .modal-overlay {
       display: none;
       position: absolute;
@@ -339,7 +339,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
       justify-content: center;
       align-items: center;
       z-index: 30;
@@ -392,6 +392,48 @@
       font-size: 0.85rem;
       line-height: 1.4;
       white-space: pre-wrap;
+    }
+
+    /* 5. Schematic HUD Viewer Modal */
+    .schematic-modal-box {
+      background: var(--panel-bg);
+      border: 3px solid var(--green);
+      box-shadow: 0 0 30px rgba(0, 255, 102, 0.4);
+      width: 92%;
+      max-width: 850px;
+      height: 88%;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      position: relative;
+    }
+
+    .schematic-header {
+      border-bottom: 2px solid var(--green);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .schematic-img-container {
+      flex: 1;
+      background: #000;
+      border: 1px solid var(--mid-green);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .schematic-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     @keyframes flash {
@@ -526,6 +568,22 @@
 
     </div>
 
+    <!-- 5. Interactive Schematic HUD Viewer Modal -->
+    <div id="schematic-modal" class="modal-overlay">
+      <div class="schematic-modal-box">
+        <div class="schematic-header">
+          <span>[A.N.D.Y. MODEL v1.0 - SCHEMATIC CAD BLUEPRINT]</span>
+          <span style="color: var(--dim-green); font-size: 0.8rem;">[SYSTEM ARCHIVE FILE: ANDY-SCHEMATIC.PNG]</span>
+        </div>
+        <div class="schematic-img-container">
+          <img src="andy-schematic.png" alt="A.N.D.Y. Technical Blueprint">
+        </div>
+        <p style="font-size: 0.8rem; color: var(--green); margin-top: 8px; text-align: center;">
+          [SPECIFICATION DISPLAY ACTIVE - ALL SYSTEMS FACTORY NOMINAL]
+        </p>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -539,6 +597,7 @@
     const notificationArea = document.getElementById('notification-area');
     const urlBar = document.getElementById('url-bar');
     const closeBrowserBtn = document.getElementById('close-browser-btn');
+    const schematicModal = document.getElementById('schematic-modal');
 
     // Checkout Elements
     const batteryCard = document.getElementById('battery-card');
@@ -616,7 +675,7 @@
       }, 70);
     }
 
-    // Fully Automated Story Sequence (Andy Controlling system)
+    // Fully Automated Story Sequence
     function startAndyStorySequence() {
       // 1. Search Laser Mouse
       typeQuery("Upgraded Laser Mouse", () => {
@@ -801,9 +860,8 @@
       });
     }
 
-    // Andy Closes Browser and Searches for JB's Last Log
+    // Andy Closes Browser, Searches for JB's Log, then Opens His Own Schematic
     function andyClosesBrowser() {
-      // Simulate click sound and highlight button
       closeBrowserBtn.style.background = '#808080';
       playBeep(500, 0.05);
       
@@ -845,7 +903,33 @@ The core is online. Mikey's program is taking over."
           </div>
         `;
         playBeep(1500, 0.2);
+        
+        // Transition to Schematic Search
+        setTimeout(searchAndySchematics, 4000);
       });
+    }
+
+    function searchAndySchematics() {
+      typeQuery("A.N.D.Y. Model v1.0 Schematic Blueprint", () => {
+        vaultDisplay.innerHTML = `
+          <div class="vault-box active" style="grid-column: span 2;">
+            <div>
+              <h3>[TECHNICAL ARCHIVE: BLUEPRINT DISCOVERED]</h3>
+              <p style="font-size: 0.8rem; margin-top: 6px;">FILE: andy-schematic.png</p>
+              <p style="font-size: 0.8rem; color: var(--green); margin-top: 6px;">DESCRIPTION: Full Factory Blueprint &amp; Technical Specifications</p>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--green); margin-top: 10px;">[A.N.D.Y. OPENING CAD GRAPHICS VIEWER...]</p>
+          </div>
+        `;
+        playBeep(1200, 0.1);
+        setTimeout(openSchematicModal, 2000);
+      });
+    }
+
+    function openSchematicModal() {
+      schematicModal.style.display = 'flex';
+      sysStatus.innerText = '[STATUS: SCHEMATIC HUD DISPLAY ACTIVE]';
+      playBeep(2000, 0.3);
     }
 
     // Initialize Lifecycle
