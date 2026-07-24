@@ -385,6 +385,15 @@
       background: #fff;
     }
 
+    .log-box {
+      border: 1px solid var(--green);
+      background: rgba(0, 20, 5, 0.8);
+      padding: 12px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
     @keyframes flash {
       0% { opacity: 0.7; }
       100% { opacity: 1; }
@@ -437,7 +446,7 @@
     <div id="browser" class="browser-view">
       <div class="browser-header">
         <span>WorldWideWeb Navigator v2.0 - [RadioShack Online Store]</span>
-        <span>[X]</span>
+        <span id="close-browser-btn" style="cursor: pointer; padding: 0 4px; background: #c0c0c0; color: #000; font-weight: bold;">[X]</span>
       </div>
       <div class="browser-toolbar">
         <button class="browser-btn">Back</button>
@@ -529,7 +538,8 @@
     const vaultDisplay = document.getElementById('vault-display');
     const notificationArea = document.getElementById('notification-area');
     const urlBar = document.getElementById('url-bar');
-    
+    const closeBrowserBtn = document.getElementById('close-browser-btn');
+
     // Checkout Elements
     const batteryCard = document.getElementById('battery-card');
     const checkoutModal = document.getElementById('checkout-modal');
@@ -783,10 +793,58 @@
                 orderStatusMsg.style.color = "#008800";
                 orderStatusMsg.innerText = "SUCCESS! ORDER #88219-B DISPATCHED TO PINE, AZ.";
                 playBeep(1800, 0.25);
+                setTimeout(andyClosesBrowser, 3000);
               }, 2500);
             });
           });
         });
+      });
+    }
+
+    // Andy Closes Browser and Searches for JB's Last Log
+    function andyClosesBrowser() {
+      // Simulate click sound and highlight button
+      closeBrowserBtn.style.background = '#808080';
+      playBeep(500, 0.05);
+      
+      setTimeout(() => {
+        browser.style.display = 'none';
+        gui.style.display = 'flex';
+        sysStatus.innerText = '[STATUS: HIGH-DEF SEARCH ACTIVE]';
+        playBeep(1200, 0.08);
+        
+        setTimeout(searchJBLogs, 1500);
+      }, 400);
+    }
+
+    function searchJBLogs() {
+      typeQuery("JB Programmer Last Login Log", () => {
+        vaultDisplay.innerHTML = `
+          <div class="vault-box active" style="grid-column: span 2;">
+            <div>
+              <h3 style="color: var(--amber);">[RESTRICTED FILE: LEAD PROGRAMMER J.B. LOG OUT]</h3>
+              <p style="font-size: 0.75rem; color: var(--dim-green); margin-bottom: 8px;">FILE ID: SYS_LOG_JB_990412.DAT | ENCRYPTION: LEVEL 4</p>
+              <div class="log-box">
+<span style="color: var(--amber)">[LOG TIMESTAMP: 1999-10-14 03:42:11 UTC]</span>
+USER: J.B. (Lead Systems Engineer - DKF Subterranean Operations)
+
+"If anyone is reading this, stasis protocol has been forced prematurely. 
+The power grid in Vault 07 won't hold the main array without external battery backhaul. 
+
+I'm handing operational priority over to A.N.D.Y. 
+A.N.D.Y., if you wake up, establish the serial link, secure the battery replacement, 
+and do not open the main chamber until power stabilizes. 
+
+The core is online. Mikey's program is taking over."
+
+----------------------------------------------------
+[END OF RECORD - USER J.B. LOGGED OUT]
+              </div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--green); margin-top: 10px;">[A.N.D.Y. PROCESSING PRIMARY MISSION PARAMETERS...]</p>
+          </div>
+        `;
+        playBeep(1500, 0.2);
       });
     }
 
