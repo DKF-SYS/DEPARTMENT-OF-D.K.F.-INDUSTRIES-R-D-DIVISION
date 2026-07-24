@@ -2,7 +2,7 @@
 
 ### 🌐 Live Terminal Site
 👉 **[Open Live Terminal](https://dkf-sys.github.io/dkf-rd-sys/)**
-
+<!-- Copyright (c) 2026 DKF Industries. All Rights Reserved. -->
 ---
 
 ### 🛠️ Working Notes
