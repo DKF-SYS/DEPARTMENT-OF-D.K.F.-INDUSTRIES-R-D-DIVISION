@@ -35,7 +35,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
+      height: 100vh;
+      width: 100vw;
       overflow: hidden;
     }
 
@@ -43,13 +44,13 @@
       position: relative;
       width: 95vw;
       max-width: 960px;
-      height: 90vh;
-      max-height: 700px;
+      height: 92vh;
+      max-height: 720px;
       background-color: var(--panel-bg);
       border: 3px solid var(--green);
       box-shadow: 0 0 25px rgba(0, 255, 102, 0.15);
       border-radius: 10px;
-      padding: 20px;
+      padding: 15px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -127,12 +128,13 @@
     /* System Header */
     .header {
       border-bottom: 2px dashed var(--green);
-      padding-bottom: 8px;
-      margin-bottom: 12px;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       font-size: 0.85rem;
       z-index: 10;
+      flex-shrink: 0;
     }
 
     /* Boot Log View */
@@ -143,6 +145,21 @@
       line-height: 1.4;
       font-size: 0.95rem;
       z-index: 10;
+      scroll-behavior: smooth;
+      padding-right: 5px;
+    }
+
+    /* Custom Scrollbar styling for CRT retro aesthetic */
+    .log-output::-webkit-scrollbar,
+    .vault-grid::-webkit-scrollbar,
+    .log-box::-webkit-scrollbar {
+      width: 8px;
+    }
+    .log-output::-webkit-scrollbar-thumb,
+    .vault-grid::-webkit-scrollbar-thumb,
+    .log-box::-webkit-scrollbar-thumb {
+      background: var(--mid-green);
+      border: 1px solid var(--green);
     }
 
     /* Upgraded GUI Search Engine Interface */
@@ -151,6 +168,7 @@
       flex: 1;
       flex-direction: column;
       z-index: 10;
+      min-height: 0; /* Prevents flex overflow clipping */
     }
 
     .search-bar-container {
@@ -158,14 +176,16 @@
       align-items: center;
       background: var(--dark-green);
       border: 2px solid var(--green);
-      padding: 8px 12px;
-      margin-bottom: 15px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
     }
 
     .search-label {
       font-weight: bold;
       margin-right: 10px;
       color: var(--green);
+      font-size: 0.9rem;
     }
 
     .search-input {
@@ -174,25 +194,28 @@
       border: none;
       color: var(--green);
       font-family: inherit;
-      font-size: 1.1rem;
+      font-size: 1rem;
       outline: none;
     }
 
     .vault-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       flex: 1;
+      overflow-y: auto;
+      padding-right: 5px;
     }
 
     .vault-box {
       border: 2px solid var(--dim-green);
       background: rgba(0, 34, 13, 0.3);
-      padding: 15px;
+      padding: 12px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       transition: all 0.3s ease;
+      flex-shrink: 0;
     }
 
     .vault-box.active {
@@ -210,10 +233,11 @@
       background: var(--dark-green);
       border: 1px solid var(--green);
       padding: 8px;
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 0.85rem;
       text-align: center;
       animation: flash 1s infinite alternate;
+      flex-shrink: 0;
     }
 
     /* 4. Vintage Web Browser Overlay */
@@ -228,6 +252,7 @@
       font-family: Arial, sans-serif;
       z-index: 20;
       position: relative;
+      min-height: 0;
     }
 
     .browser-header {
@@ -271,7 +296,7 @@
     .web-content {
       flex: 1;
       background-color: #ffffff;
-      padding: 20px;
+      padding: 15px;
       overflow-y: auto;
       color: #000;
       font-family: 'Times New Roman', Times, serif;
@@ -280,17 +305,17 @@
     .rs-header {
       background-color: #cc0000;
       color: #ffffff;
-      padding: 12px;
+      padding: 10px;
       text-align: center;
       font-family: Arial, sans-serif;
       font-weight: bold;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       letter-spacing: 2px;
       border-bottom: 4px solid #990000;
     }
 
     .rs-tagline {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-style: italic;
       color: #ffcccc;
     }
@@ -298,13 +323,13 @@
     .product-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 20px;
+      gap: 10px;
+      margin-top: 15px;
     }
 
     .product-card {
       border: 1px solid #ccc;
-      padding: 10px;
+      padding: 8px;
       background: #f9f9f9;
       position: relative;
     }
@@ -315,18 +340,18 @@
     }
 
     .product-title {
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: bold;
       color: #cc0000;
     }
 
     .btn-buy {
-      margin-top: 10px;
+      margin-top: 8px;
       background: #cc0000;
       color: white;
       border: 1px solid #990000;
       padding: 4px 8px;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: bold;
       cursor: pointer;
     }
@@ -339,7 +364,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0,0,0,0.65);
       justify-content: center;
       align-items: center;
       z-index: 30;
@@ -350,8 +375,8 @@
       border: 2px solid #fff;
       box-shadow: 2px 2px 10px #000;
       width: 90%;
-      max-width: 500px;
-      padding: 15px;
+      max-width: 480px;
+      padding: 12px;
       font-family: Arial, sans-serif;
       color: #000;
     }
@@ -362,11 +387,11 @@
       padding: 4px 8px;
       font-size: 0.85rem;
       font-weight: bold;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .form-group {
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       display: flex;
       flex-direction: column;
     }
@@ -381,42 +406,45 @@
       padding: 4px;
       border: 2px solid #808080;
       font-family: 'Courier New', monospace;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       background: #fff;
     }
 
     .log-box {
       border: 1px solid var(--green);
-      background: rgba(0, 20, 5, 0.8);
-      padding: 12px;
+      background: rgba(0, 20, 5, 0.85);
+      padding: 10px;
       font-size: 0.85rem;
       line-height: 1.4;
       white-space: pre-wrap;
+      max-height: 260px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
     }
 
-    /* 5. Schematic HUD Viewer Modal */
+    /* 5. Interactive Schematic HUD Viewer Modal */
     .schematic-modal-box {
       background: var(--panel-bg);
       border: 3px solid var(--green);
       box-shadow: 0 0 30px rgba(0, 255, 102, 0.4);
-      width: 92%;
+      width: 94%;
       max-width: 850px;
-      height: 88%;
+      height: 90%;
       display: flex;
       flex-direction: column;
-      padding: 12px;
+      padding: 10px;
       position: relative;
     }
 
     .schematic-header {
       border-bottom: 2px solid var(--green);
       padding-bottom: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: bold;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .schematic-img-container {
@@ -502,38 +530,38 @@
           RadioShack.
           <div class="rs-tagline">America's Technology Store - Online Catalog (1998 Edition)</div>
         </div>
-        <p style="margin-top: 15px; font-size: 0.9rem; text-align: center;">Welcome to the RadioShack Electronic Parts &amp; Supply Network.</p>
+        <p style="margin-top: 10px; font-size: 0.85rem; text-align: center;">Welcome to the RadioShack Electronic Parts &amp; Supply Network.</p>
         
         <div class="product-grid">
           <div class="product-card">
             <div class="product-title">Universal AC/DC Power Supply Unit</div>
-            <p style="font-size: 0.8rem; margin-top: 5px;">Cat No. 273-1631</p>
-            <p style="font-size: 0.85rem; margin-top: 5px; color: #333;">Multi-voltage selector (3V-12V). Includes 6 interchangeable Adaptaplug connectors.</p>
-            <p style="font-size: 0.9rem; font-weight: bold; margin-top: 8px;">$19.99 - [IN STOCK]</p>
+            <p style="font-size: 0.75rem; margin-top: 4px;">Cat No. 273-1631</p>
+            <p style="font-size: 0.8rem; margin-top: 4px; color: #333;">Multi-voltage selector (3V-12V). Includes 6 interchangeable Adaptaplug connectors.</p>
+            <p style="font-size: 0.85rem; font-weight: bold; margin-top: 6px;">$19.99 - [IN STOCK]</p>
             <button class="btn-buy">ADD TO CART</button>
           </div>
 
           <div class="product-card" id="battery-card">
             <div class="product-title">12V High-Capacity Gel Cell Battery</div>
-            <p style="font-size: 0.8rem; margin-top: 5px;">Cat No. 23-289</p>
-            <p style="font-size: 0.85rem; margin-top: 5px; color: #333;">Rechargeable lead-acid power cell for emergency backhaul equipment.</p>
-            <p style="font-size: 0.9rem; font-weight: bold; margin-top: 8px;">$34.99 - [IN STOCK]</p>
+            <p style="font-size: 0.75rem; margin-top: 4px;">Cat No. 23-289</p>
+            <p style="font-size: 0.8rem; margin-top: 4px; color: #333;">Rechargeable lead-acid power cell for emergency backhaul equipment.</p>
+            <p style="font-size: 0.85rem; font-weight: bold; margin-top: 6px;">$34.99 - [IN STOCK]</p>
             <button class="btn-buy" id="battery-btn">ADD TO CART</button>
           </div>
 
           <div class="product-card">
             <div class="product-title">RS-232 Null Modem Cable (DB9)</div>
-            <p style="font-size: 0.8rem; margin-top: 5px;">Cat No. 26-264</p>
-            <p style="font-size: 0.85rem; margin-top: 5px; color: #333;">6-foot serial crossover cable for direct terminal communication.</p>
-            <p style="font-size: 0.9rem; font-weight: bold; margin-top: 8px;">$12.99 - [IN STOCK]</p>
+            <p style="font-size: 0.75rem; margin-top: 4px;">Cat No. 26-264</p>
+            <p style="font-size: 0.8rem; margin-top: 4px; color: #333;">6-foot serial crossover cable for direct terminal communication.</p>
+            <p style="font-size: 0.85rem; font-weight: bold; margin-top: 6px;">$12.99 - [IN STOCK]</p>
             <button class="btn-buy">ADD TO CART</button>
           </div>
 
           <div class="product-card">
             <div class="product-title">Category 5 Ethernet Patch Cable</div>
-            <p style="font-size: 0.8rem; margin-top: 5px;">Cat No. 278-2011</p>
-            <p style="font-size: 0.85rem; margin-top: 5px; color: #333;">10Base-T high-speed digital communications line.</p>
-            <p style="font-size: 0.9rem; font-weight: bold; margin-top: 8px;">$8.99 - [IN STOCK]</p>
+            <p style="font-size: 0.75rem; margin-top: 4px;">Cat No. 278-2011</p>
+            <p style="font-size: 0.8rem; margin-top: 4px; color: #333;">10Base-T high-speed digital communications line.</p>
+            <p style="font-size: 0.85rem; font-weight: bold; margin-top: 6px;">$8.99 - [IN STOCK]</p>
             <button class="btn-buy">ADD TO CART</button>
           </div>
         </div>
@@ -544,7 +572,7 @@
         <div class="checkout-box">
           <div class="checkout-header">RADIOSHACK EXPRESS CHECKOUT - SECURE SYSTEM</div>
           <div id="checkout-body">
-            <p style="font-size: 0.8rem; margin-bottom: 10px; font-weight: bold;">ITEM: 12V High-Capacity Gel Cell Battery ($34.99)</p>
+            <p style="font-size: 0.8rem; margin-bottom: 8px; font-weight: bold;">ITEM: 12V High-Capacity Gel Cell Battery ($34.99)</p>
             <div class="form-group">
               <label>RECIPIENT / COMPANY NAME:</label>
               <input type="text" id="field-name" readonly>
@@ -573,12 +601,12 @@
       <div class="schematic-modal-box">
         <div class="schematic-header">
           <span>[A.N.D.Y. MODEL v1.0 - SCHEMATIC CAD BLUEPRINT]</span>
-          <span style="color: var(--dim-green); font-size: 0.8rem;">[SYSTEM ARCHIVE FILE: ANDY-SCHEMATIC.PNG]</span>
+          <span style="color: var(--dim-green); font-size: 0.75rem;">[FILE: ANDY-SCHEMATIC.PNG]</span>
         </div>
         <div class="schematic-img-container">
           <img src="andy-schematic.png" alt="A.N.D.Y. Technical Blueprint">
         </div>
-        <p style="font-size: 0.8rem; color: var(--green); margin-top: 8px; text-align: center;">
+        <p style="font-size: 0.75rem; color: var(--green); margin-top: 6px; text-align: center;">
           [SPECIFICATION DISPLAY ACTIVE - ALL SYSTEMS FACTORY NOMINAL]
         </p>
       </div>
@@ -644,6 +672,7 @@
         const div = document.createElement('div');
         div.innerText = bootScript[scriptIdx];
         log.appendChild(div);
+        log.scrollTop = log.scrollHeight; // Auto-scroll down
         playBeep(600, 0.03);
         scriptIdx++;
         setTimeout(runBoot, 700);
@@ -677,7 +706,6 @@
 
     // Fully Automated Story Sequence
     function startAndyStorySequence() {
-      // 1. Search Laser Mouse
       typeQuery("Upgraded Laser Mouse", () => {
         vaultDisplay.innerHTML = `
           <div class="vault-box active">
@@ -739,8 +767,8 @@
           <div class="vault-box alert">
             <div>
               <h3>[VAULT SEARCH RESULTS]</h3>
-              <p style="font-size: 0.85rem; margin-top: 8px;">QUERY: Battery Charging Unit</p>
-              <p style="font-size: 0.85rem; margin-top: 8px; font-weight: bold;">⚠️ NO UNITS IN STOCK / DEPLETED</p>
+              <p style="font-size: 0.85rem; margin-top: 6px;">QUERY: Battery Charging Unit</p>
+              <p style="font-size: 0.85rem; margin-top: 6px; font-weight: bold;">⚠️ NO UNITS IN STOCK / DEPLETED</p>
             </div>
           </div>
         `;
@@ -767,11 +795,11 @@
     function connectModem() {
       playBeep(1200, 0.1);
       vaultDisplay.innerHTML = `
-        <div class="vault-box alert" style="grid-column: span 2;">
+        <div class="vault-box alert">
           <h3>⚠️ NETWORK LINK ERROR</h3>
-          <p style="font-size: 0.85rem; margin-top: 8px;">INITIALIZING 56K MODEM HARDWARE BUS...</p>
-          <p style="font-size: 0.85rem; margin-top: 8px; color: var(--amber);">[LINK UNAVAILABLE: DIGITAL ETHERNET MODEM REQUIRED]</p>
-          <hr style="border-color: var(--amber); margin: 10px 0;">
+          <p style="font-size: 0.85rem; margin-top: 6px;">INITIALIZING 56K MODEM HARDWARE BUS...</p>
+          <p style="font-size: 0.85rem; margin-top: 6px; color: var(--amber);">[LINK UNAVAILABLE: DIGITAL ETHERNET MODEM REQUIRED]</p>
+          <hr style="border-color: var(--amber); margin: 8px 0;">
           <p style="font-size: 0.8rem;">[A.N.D.Y. EXECUTING HARDWARE BYPASS VIA RS-232 SERIAL PORT...]</p>
         </div>
       `;
@@ -781,11 +809,11 @@
     function applyRS232Bypass() {
       playBeep(1800, 0.2);
       vaultDisplay.innerHTML = `
-        <div class="vault-box active" style="grid-column: span 2;">
+        <div class="vault-box active">
           <h3>✅ NETWORK LINK ESTABLISHED</h3>
-          <p style="font-size: 0.85rem; margin-top: 8px;">RS-232 NULL-MODEM BRIDGE ACTIVE.</p>
-          <p style="font-size: 0.85rem; margin-top: 8px; color: var(--green);">[56K SERIAL BUS DIRECTLY MAPPED TO ETHERNET CONTROLLER]</p>
-          <p style="font-size: 0.8rem; margin-top: 10px;">LAUNCHING EXTERNAL INTERNET NAVIGATOR...</p>
+          <p style="font-size: 0.85rem; margin-top: 6px;">RS-232 NULL-MODEM BRIDGE ACTIVE.</p>
+          <p style="font-size: 0.85rem; margin-top: 6px; color: var(--green);">[56K SERIAL BUS DIRECTLY MAPPED TO ETHERNET CONTROLLER]</p>
+          <p style="font-size: 0.8rem; margin-top: 8px;">LAUNCHING EXTERNAL INTERNET NAVIGATOR...</p>
         </div>
       `;
       setTimeout(launchWebBrowser, 2500);
@@ -796,7 +824,6 @@
       browser.style.display = 'flex';
       sysStatus.innerText = '[STATUS: EXTERNAL WEB LINK ACTIVE]';
       
-      // Auto-type RadioShack URL
       let targetURL = "http://www.radioshack.com/catalog/parts";
       urlBar.value = "";
       let idx = 0;
@@ -813,7 +840,6 @@
       }, 50);
     }
 
-    // A.N.D.Y. Clicks Item and Fills Order Form
     function andySelectsBattery() {
       batteryCard.classList.add('selected');
       playBeep(1200, 0.1);
@@ -860,7 +886,6 @@
       });
     }
 
-    // Andy Closes Browser, Searches for JB's Log, then Opens His Own Schematic
     function andyClosesBrowser() {
       closeBrowserBtn.style.background = '#808080';
       playBeep(500, 0.05);
@@ -875,52 +900,57 @@
       }, 400);
     }
 
+    // Displays J.B.'s Log with Auto-Scroll & Typing Simulation
     function searchJBLogs() {
       typeQuery("JB Programmer Last Login Log", () => {
         vaultDisplay.innerHTML = `
-          <div class="vault-box active" style="grid-column: span 2;">
+          <div class="vault-box active">
             <div>
               <h3 style="color: var(--amber);">[RESTRICTED FILE: LEAD PROGRAMMER J.B. LOG OUT]</h3>
-              <p style="font-size: 0.75rem; color: var(--dim-green); margin-bottom: 8px;">FILE ID: SYS_LOG_JB_990412.DAT | ENCRYPTION: LEVEL 4</p>
-              <div class="log-box">
-<span style="color: var(--amber)">[LOG TIMESTAMP: 1999-10-14 03:42:11 UTC]</span>
-USER: J.B. (Lead Systems Engineer - DKF Subterranean Operations)
-
-"If anyone is reading this, stasis protocol has been forced prematurely. 
-The power grid in Vault 07 won't hold the main array without external battery backhaul. 
-
-I'm handing operational priority over to A.N.D.Y. 
-A.N.D.Y., if you wake up, establish the serial link, secure the battery replacement, 
-and do not open the main chamber until power stabilizes. 
-
-The core is online. Mikey's program is taking over."
-
-----------------------------------------------------
-[END OF RECORD - USER J.B. LOGGED OUT]
-              </div>
+              <p style="font-size: 0.75rem; color: var(--dim-green); margin-bottom: 6px;">FILE ID: SYS_LOG_JB_990412.DAT | ENCRYPTION: LEVEL 4</p>
+              <div class="log-box" id="jb-log-box"></div>
             </div>
-            <p style="font-size: 0.8rem; color: var(--green); margin-top: 10px;">[A.N.D.Y. PROCESSING PRIMARY MISSION PARAMETERS...]</p>
+            <p style="font-size: 0.8rem; color: var(--green); margin-top: 8px;">[A.N.D.Y. PROCESSING PRIMARY MISSION PARAMETERS...]</p>
           </div>
         `;
         playBeep(1500, 0.2);
-        
-        // Transition to Schematic Search
-        setTimeout(searchAndySchematics, 4000);
+
+        // Auto-scroll screen down to ensure full log box visibility
+        vaultDisplay.scrollTop = vaultDisplay.scrollHeight;
+
+        // Animated Smooth Scrolling Text for J.B. Log
+        const jbText = `[LOG TIMESTAMP: 1999-10-14 03:42:11 UTC]\nUSER: J.B. (Lead Systems Engineer - DKF Subterranean Operations)\n\n"If anyone is reading this, stasis protocol has been forced prematurely.\nThe power grid in Vault 07 won't hold the main array without external battery backhaul.\n\nI'm handing operational priority over to A.N.D.Y.\nA.N.D.Y., if you wake up, establish the serial link, secure the battery replacement,\nand do not open the main chamber until power stabilizes.\n\nThe core is online. Mikey's program is taking over."\n\n----------------------------------------------------\n[END OF RECORD - USER J.B. LOGGED OUT]`;
+
+        const logBox = document.getElementById('jb-log-box');
+        let charIndex = 0;
+
+        const logInterval = setInterval(() => {
+          if (charIndex < jbText.length) {
+            logBox.innerText += jbText[charIndex];
+            logBox.scrollTop = logBox.scrollHeight; // Auto-scrolls note as it types
+            if (charIndex % 3 === 0) playBeep(800 + Math.random() * 50, 0.01);
+            charIndex++;
+          } else {
+            clearInterval(logInterval);
+            setTimeout(searchAndySchematics, 4000);
+          }
+        }, 30);
       });
     }
 
     function searchAndySchematics() {
       typeQuery("A.N.D.Y. Model v1.0 Schematic Blueprint", () => {
         vaultDisplay.innerHTML = `
-          <div class="vault-box active" style="grid-column: span 2;">
+          <div class="vault-box active">
             <div>
               <h3>[TECHNICAL ARCHIVE: BLUEPRINT DISCOVERED]</h3>
               <p style="font-size: 0.8rem; margin-top: 6px;">FILE: andy-schematic.png</p>
               <p style="font-size: 0.8rem; color: var(--green); margin-top: 6px;">DESCRIPTION: Full Factory Blueprint &amp; Technical Specifications</p>
             </div>
-            <p style="font-size: 0.8rem; color: var(--green); margin-top: 10px;">[A.N.D.Y. OPENING CAD GRAPHICS VIEWER...]</p>
+            <p style="font-size: 0.8rem; color: var(--green); margin-top: 8px;">[A.N.D.Y. OPENING CAD GRAPHICS VIEWER...]</p>
           </div>
         `;
+        vaultDisplay.scrollTop = vaultDisplay.scrollHeight;
         playBeep(1200, 0.1);
         setTimeout(openSchematicModal, 2000);
       });
